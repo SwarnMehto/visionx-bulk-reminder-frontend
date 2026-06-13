@@ -1,0 +1,115 @@
+@media (max-width: 768px) {
+  .card {
+    padding: 12px;
+  }
+
+  body {
+    font-size: 14px;
+  }
+}
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Arial;
+  background: #f6f7fb;
+}
+
+/* smooth buttons */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+/* input style */
+input, textarea {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  border-color: #6366f1;
+}
+:root {
+  --bg: #0b1220;
+  --card: #0f172a;
+  --muted: #94a3b8;
+  --text: #e2e8f0;
+  --primary: #6366f1;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui;
+  background: #f4f6fb;
+  color: #0f172a;
+}
+
+/* CARD SYSTEM */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  border: 1px solid #eef2f7;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* INPUTS */
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+/* SIDEBAR ACTIVE */
+.active {
+  background: rgba(99,102,241,0.15);
+  color: #4f46e5;
+}
+body {
+  margin: 0;
+  font-family: Inter, system-ui;
+  background: #f4f6fb;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  border: 1px solid #eef2f7;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
