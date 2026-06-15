@@ -1,6 +1,7 @@
 const API =
-  process.env
-    .NEXT_PUBLIC_API_URL;
+  process.env.NEXT_PUBLIC_API_URL;
+
+console.log("API URL:", API);
 
 // ======================================
 // TOKEN HELPER
@@ -10,76 +11,92 @@ const getToken = () => {
   if (typeof window === "undefined")
     return null;
 
-  return localStorage.getItem(
-    "token"
-  );
+  return localStorage.getItem("token");
 };
 
 // ======================================
 // REGISTER
 // ======================================
 
-export const registerAPI =
-  async (data) => {
-    try {
-      const res = await fetch(
-        `${API}/api/auth/register`,
-        {
-          method: "POST",
+export const registerAPI = async (data) => {
+  try {
+    const res = await fetch(
+      `${API}/api/auth/register`,
+      {
+        method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-          body: JSON.stringify(
-            data
-          ),
-        }
-      );
+        body: JSON.stringify(data),
+      }
+    );
 
-      return await res.json();
+    const result = await res.json();
 
-    } catch (error) {
-      console.log(
-        "REGISTER ERROR:",
-        error
-      );
-    }
-  };
+    console.log(
+      "REGISTER RESPONSE:",
+      result
+    );
+
+    return result;
+
+  } catch (error) {
+    console.log(
+      "REGISTER ERROR:",
+      error
+    );
+
+    return {
+      success: false,
+      message: "Register Failed",
+    };
+  }
+};
 
 // ======================================
 // LOGIN
 // ======================================
 
-export const loginAPI =
-  async (data) => {
-    try {
-      const res = await fetch(
-        `${API}/api/auth/login`,
-        {
-          method: "POST",
+export const loginAPI = async (data) => {
+  try {
+    const res = await fetch(
+      `${API}/api/auth/login`,
+      {
+        method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-          body: JSON.stringify(
-            data
-          ),
-        }
-      );
+        body: JSON.stringify(data),
+      }
+    );
 
-      return await res.json();
+    const result = await res.json();
 
-    } catch (error) {
-      console.log(
-        "LOGIN ERROR:",
-        error
-      );
-    }
-  };
+    console.log(
+      "LOGIN RESPONSE:",
+      result
+    );
+
+    return result;
+
+  } catch (error) {
+    console.log(
+      "LOGIN ERROR:",
+      error
+    );
+
+    return {
+      success: false,
+      message: "Login Failed",
+    };
+  }
+};
 
 // ======================================
 // CREATE CAMPAIGN
@@ -89,7 +106,7 @@ export const createCampaignAPI =
   async (data) => {
     try {
       const res = await fetch(
-        `${API}/campaigns/create`,
+        `${API}/api/campaigns/create`,
         {
           method: "POST",
 
@@ -101,9 +118,7 @@ export const createCampaignAPI =
               `Bearer ${getToken()}`,
           },
 
-          body: JSON.stringify(
-            data
-          ),
+          body: JSON.stringify(data),
         }
       );
 
@@ -125,7 +140,7 @@ export const getCampaignsAPI =
   async () => {
     try {
       const res = await fetch(
-        `${API}/campaigns`,
+        `${API}/api/campaigns`,
         {
           headers: {
             Authorization:
@@ -152,7 +167,7 @@ export const getSingleCampaignAPI =
   async (id) => {
     try {
       const res = await fetch(
-        `${API}/campaigns/${id}`,
+        `${API}/api/campaigns/${id}`,
         {
           headers: {
             Authorization:
@@ -195,7 +210,7 @@ export const uploadCSVAPI =
       );
 
       const res = await fetch(
-        `${API}/contacts/upload`,
+        `${API}/api/contacts/upload`,
         {
           method: "POST",
 
@@ -226,7 +241,7 @@ export const getContactsAPI =
   async (campaignId) => {
     try {
       const res = await fetch(
-        `${API}/contacts/${campaignId}`,
+        `${API}/api/contacts/${campaignId}`,
         {
           headers: {
             Authorization:
@@ -255,7 +270,7 @@ export const launchCampaignAPI =
   ) => {
     try {
       const res = await fetch(
-        `${API}/bulk/launch`,
+        `${API}/api/bulk/launch`,
         {
           method: "POST",
 
