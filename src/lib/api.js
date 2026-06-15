@@ -189,49 +189,30 @@ export const getSingleCampaignAPI =
 // ======================================
 // CSV UPLOAD
 // ======================================
+export const uploadCSVAPI = async (file, campaignId) => {
+  try {
+    const formData = new FormData();
 
-export const uploadCSVAPI =
-  async (
-    file,
-    campaignId
-  ) => {
-    try {
-      const formData =
-        new FormData();
+    formData.append("file", file);
+    formData.append("campaignId", campaignId);
 
-      formData.append(
-        "file",
-        file
-      );
+    const res = await fetch(`${API}/api/contacts/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: formData,
+    });
 
-      formData.append(
-        "campaignId",
-        campaignId
-      );
-
-      const res = await fetch(
-        `${API}/api/contacts/upload`,
-        {
-          method: "POST",
-
-          headers: {
-            Authorization:
-              `Bearer ${getToken()}`,
-          },
-
-          body: formData,
-        }
-      );
-
-      return await res.json();
-
-    } catch (error) {
-      console.log(
-        "CSV UPLOAD ERROR:",
-        error
-      );
-    }
-  };
+    return await res.json();
+  } catch (error) {
+    console.log("CSV UPLOAD ERROR:", error);
+    return {
+      success: false,
+      message: "Upload Failed",
+    };
+  }
+};
 
 // ======================================
 // GET CONTACTS
