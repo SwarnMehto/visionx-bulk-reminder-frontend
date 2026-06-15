@@ -23,7 +23,7 @@ export const registerAPI =
   async (data) => {
     try {
       const res = await fetch(
-        `${API}/auth/register`,
+        `${API}/api/auth/register`,
         {
           method: "POST",
 
@@ -56,7 +56,7 @@ export const loginAPI =
   async (data) => {
     try {
       const res = await fetch(
-        `${API}/auth/login`,
+        `${API}/api/auth/login`,
         {
           method: "POST",
 
