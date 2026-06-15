@@ -39,3 +39,31 @@ export default function CsvUploader({ campaignId }) {
     </div>
   );
 }
+const handleUpload = async () => {
+  if (!file) return alert("Select file");
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("campaignId", campaignId);
+
+  const res = await uploadCSVAPI(formData);
+
+  const jobId = res.jobId;
+
+  // 🔥 PROGRESS TRACKING START
+  const interval = setInterval(async () => {
+    const progressRes = await fetch(
+      `${API}/api/contacts/progress/${jobId}`
+    );
+
+    const data = await progressRes.json();
+
+    console.log("Progress:", data.progress);
+
+    // stop when done
+    if (data.progress >= 1000) {
+      clearInterval(interval);
+      alert("Upload Completed 🚀");
+    }
+  }, 1000);
+};
