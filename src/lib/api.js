@@ -246,14 +246,31 @@ export const getContactsAPI =
 // ======================================
 
 export const launchCampaignAPI =
-  async (
-    campaignId
-  ) => {
-    try {
-      const res = await fetch(
-        `${API}/api/bulk/launch`,
+  async (id) => {
+    const response =
+      await fetch(
+        `${API}/api/campaigns/${id}/launch`,
         {
-          method: "POST",
+          method: "PUT",
+
+          headers: {
+            Authorization:
+              `Bearer ${getToken()}`,
+          },
+        }
+      );
+
+    return response.json();
+  };
+
+  
+  export const updateCampaignAPI =
+  async (id, data) => {
+    const response =
+      await fetch(
+        `${API}/api/campaigns/${id}`,
+        {
+          method: "PUT",
 
           headers: {
             "Content-Type":
@@ -263,18 +280,33 @@ export const launchCampaignAPI =
               `Bearer ${getToken()}`,
           },
 
-          body: JSON.stringify({
-            campaignId,
-          }),
+          body: JSON.stringify(
+            data
+          ),
         }
       );
+
+    return response.json();
+  };
+
+
+  export const getDashboardStatsAPI =
+  async () => {
+    try {
+      const res =
+        await fetch(
+          `${API}/api/dashboard/stats`,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${getToken()}`,
+            },
+          }
+        );
 
       return await res.json();
 
     } catch (error) {
-      console.log(
-        "LAUNCH ERROR:",
-        error
-      );
+      console.log(error);
     }
   };

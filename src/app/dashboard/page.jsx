@@ -10,12 +10,21 @@ import SendButton from "../../components/SendButton";
 import { motion, AnimatePresence } from "framer-motion";
 import ProtectedRoute from "../../components/ProtectedRoute";
 
+
 export default function Dashboard() {
   const [channel, setChannel] = useState("whatsapp");
   const [showProfile, setShowProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const wrapperRef = useRef();
+  const [dashboardStats,
+  setDashboardStats] =
+  useState({
+    totalCampaigns:0,
+    totalContacts:0,
+    totalClients:0,
+    totalSent:0,
+  });
 
   // ✅ CLOSE DROPDOWNS ON OUTSIDE CLICK (SAAS UX FIX)
   useEffect(() => {
@@ -228,6 +237,7 @@ export default function Dashboard() {
     </div>
   );
 }
+
 
 /* ================= STYLES ================= */
 const styles = {

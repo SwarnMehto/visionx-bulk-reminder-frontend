@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { useParams } from "next/navigation";
 
 import Sidebar from "../../../components/Sidebar";
-
 import CsvUploader from "../../../components/CsvUploader";
-import { launchCampaignAPI } from "../../../lib/api";
 
 import {
   getSingleCampaignAPI,
   uploadCSVAPI,
+  updateCampaignAPI,
+  launchCampaignAPI,
 } from "../../../lib/api";
 
 export default function CampaignDetail() {
@@ -26,33 +25,58 @@ export default function CampaignDetail() {
   const [uploading, setUploading] =
     useState(false);
 
+  const [launching, setLaunching] =
+    useState(false);
+
+  const [message, setMessage] =
+    useState("");
+
+const [partyName, setPartyName] =
+  useState("");
+
   // LOAD CAMPAIGN
   useEffect(() => {
     fetchCampaign();
   }, []);
 
   const fetchCampaign = async () => {
-    const res =
-      await getSingleCampaignAPI(
-        params.id
-      );
+    try {
+      const res =
+        await getSingleCampaignAPI(
+          params.id
+        );
 
-    setCampaign(res.campaign);
+      setCampaign(res.campaign);
+
+setMessage(
+  res.campaign.message || ""
+);
+
+setPartyName(
+  res.campaign.partyName || ""
+);
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // CSV UPLOAD
   const handleUpload = async () => {
     if (!selectedFile) {
-      return alert("Select CSV file");
+      return alert(
+        "Select CSV file"
+      );
     }
 
     try {
       setUploading(true);
 
-      const res = await uploadCSVAPI(
-        selectedFile,
-        params.id
-      );
+      const res =
+        await uploadCSVAPI(
+          selectedFile,
+          params.id
+        );
 
       alert(
         `✅ ${res.total} Contacts Uploaded`
@@ -61,29 +85,69 @@ export default function CampaignDetail() {
     } catch (error) {
       console.log(error);
 
+      alert(
+        "CSV Upload Failed"
+      );
+
     } finally {
       setUploading(false);
     }
   };
-  const handleLaunch = async () => {
-  try {
-    const res =
-      await launchCampaignAPI(
-        params.id
+
+  const handleSave =
+  async () => {
+    try {
+      await updateCampaignAPI(
+        params.id,
+        {
+          message,
+          partyName,
+        }
       );
 
-    alert(
-      `✅ Sent: ${res.successCount}
-❌ Failed: ${res.failedCount}`
-    );
+      alert(
+        "✅ Campaign Updated"
+      );
 
-  } catch (error) {
-    console.log(error);
-  }
-};
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  if (!campaign)
+  // LAUNCH CAMPAIGN
+  const handleLaunch = async () => {
+    try {
+      setLaunching(true);
+
+      const res =
+        await launchCampaignAPI(
+          params.id
+        );
+
+      alert(
+        `✅ Campaign Sent
+
+Sent: ${res.successCount || 0}
+Failed: ${res.failedCount || 0}`
+      );
+
+      fetchCampaign();
+
+    } catch (error) {
+      console.log(error);
+
+      alert(
+        "Campaign Launch Failed"
+      );
+
+    } finally {
+      setLaunching(false);
+    }
+  };
+
+  if (!campaign) {
     return <p>Loading...</p>;
+  }
 
   return (
     <div style={styles.wrapper}>
@@ -99,38 +163,106 @@ export default function CampaignDetail() {
           </span>
         </div>
 
-        {/* INFO CARD */}
+        {/* DETAILS */}
         <div style={styles.card}>
-          <h2>Campaign Details</h2>
+          <h2>
+            Campaign Details
+          </h2>
 
           <p>
             Status:
-            <b> {campaign.status}</b>
+            <b>
+              {" "}
+              {campaign.status}
+            </b>
           </p>
 
           <p>
             Type:
-            <b> {campaign.type}</b>
+            <b>
+              {" "}
+              {campaign.type}
+            </b>
           </p>
         </div>
 
-        {/* CSV CARD */}
+        {/* CSV */}
         <div style={styles.card}>
-          <h2>Upload Contacts CSV</h2>
+          <h2>
+            Upload Contacts CSV
+          </h2>
 
           <CsvUploader
-            onFileSelect={setSelectedFile}
-          />
+  campaignId={params.id}
+  onUploadSuccess={
+    fetchCampaign
+  }
+/>
 
           <button
-            style={styles.btn}
-            onClick={handleUpload}
-          >
+  style={styles.btn}
+  onClick={handleUpload}
+>
             {uploading
               ? "Uploading..."
               : "🚀 Upload Contacts"}
           </button>
         </div>
+        <div style={styles.card}>
+  <h2>Campaign Editor</h2>
+
+  <input
+    value={partyName}
+    onChange={(e) =>
+      setPartyName(e.target.value)
+    }
+    placeholder="Party Name"
+    style={{
+      width: "100%",
+      padding: 12,
+      marginBottom: 15,
+      border: "1px solid #ddd",
+      borderRadius: 10,
+    }}
+  />
+
+  <textarea
+    rows={8}
+    value={message}
+    onChange={(e) =>
+      setMessage(e.target.value)
+    }
+    placeholder="Campaign Message"
+    style={{
+      width: "100%",
+      padding: 12,
+      borderRadius: 10,
+      border: "1px solid #ddd",
+    }}
+  />
+
+  <button
+    style={styles.btn}
+    onClick={handleSave}
+  >
+    💾 Save Changes
+  </button>
+</div>
+
+
+        {/* SEND BUTTON */}
+        <button
+          style={
+            styles.launchBtn
+          }
+          onClick={
+            handleLaunch
+          }
+        >
+          {launching
+            ? "Sending..."
+            : "🚀 Send Campaign"}
+        </button>
       </div>
     </div>
   );
@@ -150,7 +282,8 @@ const styles = {
 
   header: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent:
+      "space-between",
     alignItems: "center",
     marginBottom: 25,
   },
@@ -172,6 +305,16 @@ const styles = {
       "0 10px 30px rgba(0,0,0,0.05)",
   },
 
+  textarea: {
+    width: "100%",
+    padding: 12,
+    borderRadius: 12,
+    border:
+      "1px solid #d1d5db",
+    fontSize: 15,
+    resize: "vertical",
+  },
+
   btn: {
     marginTop: 20,
     width: "100%",
@@ -183,5 +326,17 @@ const styles = {
     cursor: "pointer",
     fontSize: 16,
     fontWeight: 600,
+  },
+
+  launchBtn: {
+    width: "100%",
+    padding: 18,
+    background: "#16a34a",
+    color: "white",
+    border: "none",
+    borderRadius: 14,
+    cursor: "pointer",
+    fontSize: 18,
+    fontWeight: 700,
   },
 };
